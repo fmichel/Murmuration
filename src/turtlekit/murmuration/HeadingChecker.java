@@ -29,13 +29,12 @@ import org.jfree.data.xy.XYSeriesCollection;
 import madkit.simulation.SimulationException;
 import madkit.simulation.probe.PropertyProbe;
 import turtlekit.agr.TKOrganization;
-import turtlekit.flocking.BirdFlockingUnify;
 import turtlekit.gui.util.ChartsUtil;
 import turtlekit.viewer.AbstractObserver;
 
 public class HeadingChecker extends AbstractObserver {
 	
-	private PropertyProbe<BirdFlockingUnify,Double> probeHeading;
+	private PropertyProbe<AbstractStarling,Double> probeHeading;
 	private XYSeries heading;
 	private int index = 0;
 	
@@ -50,7 +49,7 @@ public class HeadingChecker extends AbstractObserver {
 	protected void activate() {
 		setLogLevel(Level.ALL);
 		super.activate();
-		probeHeading = new PropertyProbe<BirdFlockingUnify,Double>(getCommunity(), TKOrganization.TURTLES_GROUP, TKOrganization.TURTLE_ROLE, "angle");
+		probeHeading = new PropertyProbe<AbstractStarling,Double>(getCommunity(), TKOrganization.TURTLES_GROUP, TKOrganization.TURTLE_ROLE, "angle");
 		addProbe(probeHeading);
 	}
 
@@ -70,7 +69,7 @@ public class HeadingChecker extends AbstractObserver {
 	protected void observe() {
 		double averageHeading = 0;
 		double averageSpeed = 0;
-		for (BirdFlockingUnify a : probeHeading.getCurrentAgentsList()) {
+		for (AbstractStarling a : probeHeading.getCurrentAgentsList()) {
 			averageHeading += probeHeading.getPropertyValue(a);
 		}
 		averageHeading /= (double) probeHeading.size();

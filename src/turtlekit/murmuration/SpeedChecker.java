@@ -29,14 +29,13 @@ import org.jfree.data.xy.XYSeriesCollection;
 import madkit.simulation.SimulationException;
 import madkit.simulation.probe.PropertyProbe;
 import turtlekit.agr.TKOrganization;
-import turtlekit.flocking.BirdFlockingUnify;
 import turtlekit.gui.util.ChartsUtil;
 import turtlekit.viewer.AbstractObserver;
 
 public class SpeedChecker extends AbstractObserver {
 	
 
-	private PropertyProbe<BirdFlockingUnify,Double> probeSpeed;
+	private PropertyProbe<AbstractStarling,Double> probeSpeed;
 	private XYSeries speed;
 	private int index = 0;
 	
@@ -51,7 +50,7 @@ public class SpeedChecker extends AbstractObserver {
 	protected void activate() {
 		setLogLevel(Level.ALL);
 		super.activate();
-		probeSpeed = new PropertyProbe<BirdFlockingUnify,Double>(getCommunity(), TKOrganization.TURTLES_GROUP, TKOrganization.TURTLE_ROLE, "speed");
+		probeSpeed = new PropertyProbe<AbstractStarling,Double>(getCommunity(), TKOrganization.TURTLES_GROUP, TKOrganization.TURTLE_ROLE, "speed");
 		addProbe(probeSpeed);
 	}
 
@@ -71,7 +70,7 @@ public class SpeedChecker extends AbstractObserver {
 	protected void observe() {
 		double averageHeading = 0;
 		double averageSpeed = 0;
-		for (BirdFlockingUnify a : probeSpeed.getCurrentAgentsList()) {
+		for (AbstractStarling a : probeSpeed.getCurrentAgentsList()) {
 			averageSpeed += probeSpeed.getPropertyValue(a);
 		}
 		averageSpeed /= (float) probeSpeed.size();

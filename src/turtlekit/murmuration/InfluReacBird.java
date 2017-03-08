@@ -168,7 +168,7 @@ public class InfluReacBird extends Turtle {
     	adaptSpeed(clusterAverageSpeed);
     	
 //    	float clusterAverageHeading = 0;
-//    	for (InfluReacBird influReacBird : birdList) {
+//    	for (InfluReacBird influReacBird : neighborBirds) {
 //			clusterAverageHeading += influReacBird.getHeading();
 //		}
     	
@@ -256,7 +256,7 @@ public class InfluReacBird extends Turtle {
         	this.setColor(Color.GREEN);
         }
         
-        if(!Environment.isCUDA()){
+        if(!MurmurationEnvironment.isCUDA()){
         	float globalSpeed = 0;
         	
              for(InfluReacBird bird : birdList){
@@ -270,7 +270,7 @@ public class InfluReacBird extends Turtle {
              adaptSpeed(globalSpeed);
         }
         else{
-            globalHeading = ((Environment) getEnvironment()).getCudaHeadingValue(this.xcor(), this.ycor());
+            globalHeading = ((MurmurationEnvironment) getEnvironment()).getCudaHeadingValue(this.xcor(), this.ycor());
         }
  
 //        if (myHeading > globalHeading) {
@@ -309,7 +309,7 @@ public class InfluReacBird extends Turtle {
      * Fill its heading value in the environment
      */
     public void fillHeadingEnvironment(double heading){
-//        ((Environment) getEnvironment()).setCudaHeadingValue(this.xcor(), this.ycor(), heading);
+//        ((MurmurationEnvironment) getEnvironment()).setCudaHeadingValue(this.xcor(), this.ycor(), heading);
     }
  
 	/**

@@ -1,7 +1,9 @@
 package turtlekit.murmuration;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
+import java.util.stream.IntStream;
 
 import turtlekit.cuda.CudaAverageField;
 import turtlekit.cuda.CudaEngine;
@@ -9,7 +11,7 @@ import turtlekit.kernel.Patch;
 import turtlekit.kernel.TKEnvironment;
 
 /**
- * The Environment in this flocking simulation
+ * The MurmurationEnvironment in this flocking simulation
  * <p>
  * The environment is characterized by:
  * <ul>
@@ -25,33 +27,28 @@ import turtlekit.kernel.TKEnvironment;
  * 
  */
 
-public class Environment extends TKEnvironment {
+public class MurmurationEnvironment extends TKEnvironment {
     
     /**
      * The GPU Module
      */
     private CudaAverageField cudaHeadingGrid;
      
-    /**
-     * The size of the environment
-     */
-    private static int envDimension = 512;
+//    /**
+//     * The size of the environment
+//     */
+//    private static int envDimension = 512;//use super class
      
     /**
      * Do you want to use CUDA ?
      */
-    private static boolean CUDA = true;
+    private static boolean CUDA = true; //TODO move that option in the launchers
+//    private static boolean CUDA = false;
      
     /**
      * The array containing the heading of all the agents
      */
-    private static float headingSheet[] = new float[envDimension * envDimension];
-     
-    /**
-     * The array containing all the Patch of the Grid
-     * @see Patch
-     */
-    private Patch patchSheet[] = new Patch[envDimension * envDimension];
+    private static float headingSheet[];
      
     /**
      * Random number generator
@@ -67,14 +64,6 @@ public class Environment extends TKEnvironment {
     }
      
     /**
-     * Return the size of the environment
-     * @return envDimension
-     */
-    public static int getEnvDimension() {
-        return envDimension;
-    }
- 
-    /**
      * Return if CUDA is used or not
      * @return CUDA
      */
@@ -83,33 +72,24 @@ public class Environment extends TKEnvironment {
     }
      
     /**
-     * Activate of the Environment
+     * Activate of the MurmurationEnvironment
      * @see TKEnvironment#activate()
      */
     protected void activate(){
         super.activate();
-        patchSheet = this.getPatchGrid();
-        initSpeedAndHeadingSheet();
-        makeTheCache();
-        cudaHeadingGrid = new CudaAverageField("Average",envDimension,envDimension,BirdFlockingUnify.getVision(),headingSheet);
+        headingSheet = new float[getWidth()*getHeight()];
+//        makeTheCache();
+        cudaHeadingGrid = new CudaAverageField("Average",getWidth(),getHeight(),headingSheet);
+        cleanHeadingSheet();
     }
      
     /**
      * Forcing caching of the Patch
-     * @see Environment#activate()
+     * @see MurmurationEnvironment#activate()
      */
     protected void makeTheCache(){
         for (Patch p : getPatchGrid()) {
             p.getNeighbors(10, true);
-        }
-    }
-     
-    /**
-     * Initializing the array containing the heading of the agents
-     */
-    protected void initSpeedAndHeadingSheet(){
-        for(int i = 0 ; i < envDimension * envDimension ; i++){
-                headingSheet[i] = -1;       
         }
     }
      
@@ -120,13 +100,15 @@ public class Environment extends TKEnvironment {
     @Override
     protected void update() {
         if(CUDA){
-            updateSpeedAndHeadingSheetV2();
  
-            cudaHeadingGrid.computeAverage();
+//        	updateSpeedAndHeadingSheetV2();
+            cudaHeadingGrid.computeAverage(FlockingModel.CUDA_FOV.getValue());
  
             if(isSynchronizeGPU()){
                 CudaEngine.cuCtxSynchronizeAll();   
             }
+
+            cleanHeadingSheet();
         }
     }
      
@@ -150,13 +132,13 @@ public class Environment extends TKEnvironment {
      * Update the array containing heading of the agents
      */
     protected void updateSpeedAndHeadingSheet(){
-            for(int i = 0 ; i < envDimension * envDimension ; i++){
-                List<BirdFlockingUnify> turtleList = patchSheet[i].getTurtles(BirdFlockingUnify.class);
+            for(int i = 0 ; i < getWidth() * getHeight() ; i++){
+                List<BirdFlockingUnify> turtleList = getPatchGrid()[i].getTurtles(BirdFlockingUnify.class);
                 if(turtleList.isEmpty()){
                     cudaHeadingGrid.set(i,-1);
                 }
                 else{
-                    for(BirdFlockingUnify b : turtleList){
+                    for(AbstractStarling b : turtleList){
                         cudaHeadingGrid.set(i,(float)b.getHeading());
                     }
                 }
@@ -167,12 +149,28 @@ public class Environment extends TKEnvironment {
      * Update the array containing heading of the agents (V2)
      */
     protected void updateSpeedAndHeadingSheetV2(){
-        int j = envDimension * envDimension;
-        for(int i = j - 1 ; i > 0 ; i--){
-            if(patchSheet[i].isEmpty()){
-                cudaHeadingGrid.set(i,-1);
-            }
-        }
+    	IntStream.range(0, getWidth() * getHeight()).parallel()
+    		.forEach(i -> {if(getPatchGrid()[i].isEmpty()) cudaHeadingGrid.set(i, -1);});
+//        int j = envDimension * envDimension;
+//        for(int i = j - 1 ; i > 0 ; i--){
+//            if(patchSheet[i].isEmpty()){
+//                cudaHeadingGrid.set(i,-1);
+//            }
+//        }
+    }
+
+    /**
+     * Update the array containing heading of the agents (V2)
+     */
+    protected void cleanHeadingSheet(){
+    	IntStream.range(0, getWidth() * getHeight()).parallel()
+    		.forEach(i -> {cudaHeadingGrid.set(i, -1);});
+//        int j = envDimension * envDimension;
+//        for(int i = j - 1 ; i > 0 ; i--){
+//            if(patchSheet[i].isEmpty()){
+//                cudaHeadingGrid.set(i,-1);
+//            }
+//        }
     }
 }
 
