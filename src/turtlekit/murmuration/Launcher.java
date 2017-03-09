@@ -27,8 +27,9 @@ public class Launcher extends TKLauncher{
 	@Override
 	protected void activate() {
 		setMadkitProperty(cuda, "true");
-		setMadkitProperty(Option.envDimension, "512,512");//String.valueOf(MurmurationEnvironment.getEnvDimension())+","+String.valueOf(MurmurationEnvironment.getEnvDimension()));
 		setMadkitProperty(scheduler, SchedulerFlocking.class.getName());
+		setMadkitProperty(Option.viewers,FlockingModel.class.getName()+";"+TKDefaultViewer.class.getName());
+		setMadkitProperty(Option.envDimension, "512,512");//String.valueOf(MurmurationEnvironment.getEnvDimension())+","+String.valueOf(MurmurationEnvironment.getEnvDimension()));
 		super.activate();
 	}
 	
@@ -38,10 +39,6 @@ public class Launcher extends TKLauncher{
 	@Override
 	protected void createSimulationInstance() {
 		setMadkitProperty(Option.environment, MurmurationEnvironment.class.getName());
-		setMadkitProperty(Option.viewers, TKDefaultViewer.class.getName()
-//				+";"+HeadingChecker.class.getName()
-				);
-//		setMadkitProperty(Option.viewers, FlockViewerColorPatch.class.getName());
 		setMadkitProperty(Option.turtles, BirdFlockingUnify.class.getName()+",4000");
 		setMadkitProperty(Option.fastRendering, "true");
 		setMadkitProperty(Option.startSimu, "false");
@@ -53,10 +50,10 @@ public class Launcher extends TKLauncher{
      */
 	public static void main(String[] args) {
 		executeThisLauncher(
-				Option.viewers.toString(),FlockingModel.class.getName()+";"+
-				TKDefaultViewer.class.getName()
-				,Option.envWidth.toString(),"512,512"
-				,Option.startSimu.toString()
+//				Option.viewers.toString(),FlockingModel.class.getName()+";"+
+//				TKDefaultViewer.class.getName()
+//				,Option.envWidth.toString(),"512,512"
+//				,Option.startSimu.toString()
 				);
 	}
 
