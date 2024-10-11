@@ -39,7 +39,7 @@ public class Launcher extends TKLauncher{
 	@Override
 	protected void createSimulationInstance() {
 		setMadkitProperty(Option.environment, MurmurationEnvironment.class.getName());
-		setMadkitProperty(Option.turtles, BirdFlockingUnify.class.getName()+",4000");
+		setMadkitProperty(Option.turtles, BirdFlockingUnify.class.getName()+",2000");
 		setMadkitProperty(Option.fastRendering, "true");
 		setMadkitProperty(Option.startSimu, "false");
 		super.createSimulationInstance();

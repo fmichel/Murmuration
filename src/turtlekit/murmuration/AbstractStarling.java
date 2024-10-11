@@ -77,6 +77,7 @@ public class AbstractStarling extends Turtle {
 	    super.activate();
 	    setColor(Color.YELLOW);
 	    home();
+//	    setHeading(0);
 	    randomHeading();
 	    speed = generator.nextFloat() + 0.5f;
 	    adapatativeSpeed = speed / 5.0f;

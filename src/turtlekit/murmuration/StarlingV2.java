@@ -1,9 +1,7 @@
 package turtlekit.murmuration;
 
 import java.awt.Color;
-import java.util.List;
 
-import turtlekit.kernel.Turtle;
 import turtlekit.kernel.TurtleKit.Option;
 import turtlekit.viewer.TKDefaultViewer;
 
@@ -317,7 +315,7 @@ public class StarlingV2 extends AbstractStarling {
     }
     
     public static void main(String[] args) {
-		executeThisTurtle(4000
+		executeThisTurtle(2000
 				,Option.environment.toString(),MurmurationEnvironment.class.getName()
 				,Option.viewers.toString(),FlockingModel.class.getName()+";"+
 				TKDefaultViewer.class.getName()

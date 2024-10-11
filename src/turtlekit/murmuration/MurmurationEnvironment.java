@@ -1,6 +1,5 @@
 package turtlekit.murmuration;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.IntStream;
@@ -42,8 +41,8 @@ public class MurmurationEnvironment extends TKEnvironment {
     /**
      * Do you want to use CUDA ?
      */
-    private static boolean CUDA = true; //TODO move that option in the launchers
-//    private static boolean CUDA = false;
+//    private static boolean CUDA = true; //TODO move that option in the launchers
+    private static boolean CUDA = false;
      
     /**
      * The array containing the heading of all the agents
@@ -99,7 +98,8 @@ public class MurmurationEnvironment extends TKEnvironment {
      */
     @Override
     protected void update() {
-        if(CUDA){
+    	
+        if(isCudaOn()){
  
 //        	updateSpeedAndHeadingSheetV2();
             cudaHeadingGrid.computeAverage(FlockingModel.CUDA_FOV.getValue());
